@@ -6,7 +6,11 @@
 
     <groupId>org.example</groupId>
     <artifactId>springcloud-demo</artifactId>
+    <packaging>pom</packaging>
     <version>1.0</version>
+    <modules>
+        <module>eurekaserver</module>
+    </modules>
 
     <parent>
         <artifactId>spring-boot-starter-parent</artifactId>
