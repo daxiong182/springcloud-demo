@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{/layui/css/layui.css}" media="all">
+</head>
+<body>
+<div class="layui-container" style="margin-top: 50px;">
+
+    <div class="layui-container"  style="width: 500px;height: 330px;padding-top: 60px;">
+        <form class="layui-form"  action="/menu/save" method="post" enctype="multipart/form-data">
+            <div class="layui-form-item">
+                <label class="layui-form-label">菜品：</label>
+                <div class="layui-inline">
+                    <input id="names" type="text" name="name" lay-verify="required" autocomplete="off" placeholder="请输入菜名" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">单价：</label>
+                <div class="layui-inline">
+                    <input id="prices" type="text" name="price" lay-verify="required" placeholder="请输入价钱" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">口味：</label>
+                <div class="layui-inline">
+                    <input id="tastes" type="text" name="flavor" lay-verify="required" placeholder="请输入口味" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">分类：</label>
+                <div class="layui-input-inline">
+                    <select name="type.id">
+                        <option id="types" th:each="type:${list}" th:text="${type.name}" th:value="${type.id}"></option>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <button class="layui-btn" id="btnSubmit"  style="margin-left: 160px;" >提交</button>
+            </div>
+        </form>
+    </div>
+</div>
+<script th:src="@{/layui/layui.js}" charset="utf-8"></script>
+<script>
+    layui.use(['form', 'element'], function(){
+        var form = layui.form;
+        var element = layui.element;
+        //自定义验证规则
+        form.verify({
+            price: [/(^[1-9]([0-9]+)?(\.[0-9]{1,2})?$)|(^(0){1}$)|(^[0-9]\.[0-9]([0-9])?$)/, "请输入正确的价格"]
+        });
+
+    });
+
+    btnSubmit.onclick=function (e){
+        e.preventDefault();
+        let name=names.value;
+        let price=prices.value;
+        let taste=tastes.value;
+        let type = {id:types.types.value,name:types.types.label}
+        let data =JSON.stringify({name,price,flavor:taste,type})
+        console.log({data})
+        fetch('http://localhost:8030/menu/save', {
+            method: 'post',
+            body: data, // 请求参数，JSON.stringify() JS 数据对象转换为 JSON 字符串
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }) .then(function (data) {
+            return data.text();
+        }).then(function (data) {
+            console.log(data)
+            window.location.href="http://localhost:8030/menu/redirect/index"
+        });
+}
+
+
+</script>
+</body>
+</html>
